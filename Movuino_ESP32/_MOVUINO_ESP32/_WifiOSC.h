@@ -26,15 +26,9 @@ public:
     void begin();
     void update();
 
-    void send(const char * addr_, float val_);
+    template <typename DataType>
+    void send(const char * addr_, DataType data_);
 };
-
-MovuinoWifiOSC::MovuinoWifiOSC() {
-    Serial.println("Constructor MovuinoWifiOSC");
-    // const IPAddress outIp(192,168,43,157); // hssnadr
-    // const IPAddress outIp(192, 168, 1, 10); // LANCRY
-    this->outIp = IPAddress(192, 168, 1, 18); // Cocobongo
-}
 
 MovuinoWifiOSC::MovuinoWifiOSC(char *ssid_, char *pass_, int *ip_, unsigned int port_)
 {
@@ -67,18 +61,18 @@ void MovuinoWifiOSC::update()
 {
 }
 
-void MovuinoWifiOSC::send(const char * addr_, float val_)
+template <typename DataType>
+void MovuinoWifiOSC::send(const char * addr_, DataType data_)
 {
     // Create message
     OSCMessage msg_(addr_);
-    msg_.add(val_);
+    msg_.add(data_);
 
     // Send message
     udp.beginPacket(this->outIp, this->port);
     msg_.send(udp);
     udp.endPacket();
     msg_.empty();
-    // delay(10);
 }
 
 // void MovuinoWifiOSC::receiveMessage() {
